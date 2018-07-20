@@ -8,6 +8,18 @@ data("instances")
 data("rankMatrix")
 # when memoising data types are important
 set.seed(1)
-preCalcKs = preCalcRandomKs(instances$cmap_name,ncol(rankMatrix))
+cmapPreCalc = preCalcRandomKs(instances$cmap_name,ncol(rankMatrix))
 
-saveRDS(preCalcKs,'data-raw/legacyPreCalc.rds')
+devtools::use_data(cmapPreCalc)
+
+# saveRDS(preCalcKs,'data-raw/legacyPreCalc.rds')
+
+
+
+legacyMsigDBPreCalc = specificityPreCalculation(signatures = MSigDBLegacy,
+                                                rankMatrix = rankMatrix,
+                                                chems = instances$cmap_name,
+                                                preCalc = cmapPreCalc,
+                                                cores = 5)
+
+devtools::use_data(legacyMsigDBPreCalc)
