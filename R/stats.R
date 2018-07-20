@@ -148,6 +148,8 @@ connectivityMapEnrichment = function(upTags,downTags,rankMatrix,chems,pAdjustMet
     confidence$FDR =  p.adjust(confidence$p,method = pAdjustMethod)
     confidence = confidence[c('enrichment','p','FDR','nonNull','instanceCount')]
 
+    confidence$reliable =  confidence$nonNull>0.5 & confidence$instanceCount > 1
+
     return(list(instanceScores = as.data.frame(scores), chemScores = confidence))
 }
 
@@ -181,4 +183,35 @@ preCalcRandomKs = function(chems,experimentCount, d = 100000,preCalc = NULL, deb
         }
     })
     return(memoDirectRandomKsCalc)
+}
+
+
+#' @export
+specificityPreCalculation = function(signatures, rankMatrix, chems, pAdjustMethod = 'fdr', d = 100000, cores = 1,preCalc = NULL){
+    signatures %>% parallel::mclapply(function(signature){
+        upTags = signature$upTags
+        downTags = signature$downTags
+        connectivityMapEnrichment(upTags,downTags,rankMatrix,chems, pAdjustMethod,d,preCalc)$chemScores
+    },mc.cores = cores)
+}
+
+#' @export
+specificityCalc = function(chemScores, specificityPreCalc){
+    specificity = 1:nrow(chemScores) %>% sapply(function(i){
+        chem = rownames(chemScores)[i]
+        enrichments = specificityPreCalc %>% sapply(function(x){
+            x[chem,'enrichment']
+        })
+        sign = sign(chemScores[chem,'enrichment'])
+
+
+        if(sign==-1){
+            enrichments = enrichments[enrichments<=0]
+        } else if(sign ==1){
+            enrichments = enrichments[enrichments>=0]
+
+        }
+        sum(abs(chemScores[chem,'enrichment']) < abs(enrichments))/length(enrichments)
+    })
+
 }
