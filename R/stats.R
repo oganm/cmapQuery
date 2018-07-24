@@ -159,13 +159,14 @@ connectivityMapEnrichment = function(upTags,downTags,rankMatrix,chems,pAdjustMet
 # the output is a memoised function that should be given to connectivityMapEnrichment
 # to speed things up
 #' @export
-preCalcRandomKs = function(chems,experimentCount, d = 100000,preCalc = NULL, debug = FALSE){
+preCalcRandomKs = function(chems, d = 100000,preCalc = NULL, debug = FALSE){
     if(!is.null(preCalc)){
         memoDirectRandomKsCalc = preCalc
     } else{
         memoDirectRandomKsCalc = memoise::memoise(directRandomKsCalc)
     }
     instanceLengths = table(chems) %>% unique
+    experimentCount = length(chems)
 
     if(!debug){
         pb = txtProgressBar(min = 0, max = length(instanceLengths), initial = 0)
