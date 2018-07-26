@@ -78,7 +78,7 @@ scoreCalc = function(Vup,Vdown,n){
 
 #' @export
 connectivityMapEnrichment = function(upTags,downTags,rankMatrix,chems,pAdjustMethod = 'fdr' ,d=100000,
-                                     preCalc = NULL, vocal =TRUE){
+                                     preCalc = NULL, vocal =FALSE){
 
     if(vocal){print('Starting')}
 
