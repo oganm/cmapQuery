@@ -85,6 +85,9 @@ connectivityMapEnrichment = function(upTags,downTags,rankMatrix,chems,pAdjustMet
     }
     assertthat::assert_that(ncol(rankMatrix)==length(chems))
 
+    upTags = as.character(upTags[upTags %in% rownames(rankMatrix)])
+    downTags = as.character(downTags[downTags %in% rownames(rankMatrix)])
+
     n = rankMatrix %>% nrow
     Vup = rankMatrix[upTags,] %>% apply(2,sort)
     Vdown = rankMatrix[downTags,] %>% apply(2,sort)
