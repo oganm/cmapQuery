@@ -78,11 +78,15 @@ scoreCalc = function(Vup,Vdown,n){
 
 #' @export
 connectivityMapEnrichment = function(upTags,downTags,rankMatrix,chems,pAdjustMethod = 'fdr' ,d=100000,
-                                     preCalc = NULL){
+                                     preCalc = NULL, vocal =TRUE){
+
+    if(vocal){print('Starting')}
 
     if(!is.null(preCalc)){
         memoDirectRandomKsCalc = preCalc
+        if(vocal){print('Memoised function acquired')}
     }
+
     assertthat::assert_that(ncol(rankMatrix)==length(chems))
 
     upTags = as.character(upTags[upTags %in% rownames(rankMatrix)])
@@ -93,11 +97,16 @@ connectivityMapEnrichment = function(upTags,downTags,rankMatrix,chems,pAdjustMet
     Vdown = rankMatrix[downTags,] %>% apply(2,sort)
     scores = scoreCalc(Vup,Vdown,n)
 
+    if(vocal){print('Calculating scores')}
+
+
     # "p to be max( si) and q to be min( si) across all instances in the collection c"
     p = max(scores$score)
     q = min(scores$score)
 
     scores %<>% dplyr::mutate(ConScore = (score>0)*(score/p) + (score<0)*(-score/q))
+
+
 
     # "The Kolmogorov-Smirnov statistic is computed for the set of t instances
     # in the list of all n instances in a result ordered in descending order of
@@ -107,12 +116,22 @@ connectivityMapEnrichment = function(upTags,downTags,rankMatrix,chems,pAdjustMet
         dplyr::mutate(order = seq_len(nrow(scores))) %>%
         dplyr::arrange(desc(ConScore),desc(kUp))
 
+    if(vocal){print('Scores calculated')}
+
     uniqueChems = chems %>% unique
+
+    if(vocal){
+        print('Starting ks score calculation')
+        pb = txtProgressBar(min = 0, max = length(uniqueChems), initial = 0)
+    }
 
     confidence = uniqueChems %>% sapply(function(chem){
         # browser()
         # print(chem)
         chemInstances = which(chems %in% chem)
+        if(vocal){
+            setTxtProgressBar(pb,which(uniqueChems %in% chem))
+        }
 
         relevantInstances = scores %>% dplyr::filter(order %in% chemInstances)
 
