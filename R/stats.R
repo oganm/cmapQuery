@@ -218,7 +218,7 @@ specificityPreCalculation = function(signatures, rankMatrix, chems, pAdjustMetho
         mcl = parallel::mclapply
     }
 
-    signatures %>% parallel::mclapply(function(signature){
+    signatures %>% mcl(function(signature){
         upTags = signature$upTags
         downTags = signature$downTags
         connectivityMapEnrichment(upTags,downTags,rankMatrix,chems, pAdjustMethod,d,preCalc)$chemScores
