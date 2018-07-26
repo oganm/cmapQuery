@@ -210,7 +210,14 @@ preCalcRandomKs = function(chems, d = 100000,preCalc = NULL, debug = FALSE){
 
 
 #' @export
-specificityPreCalculation = function(signatures, rankMatrix, chems, pAdjustMethod = 'fdr', d = 100000, cores = 1,preCalc = NULL){
+specificityPreCalculation = function(signatures, rankMatrix, chems, pAdjustMethod = 'fdr', d = 100000, cores = 1,preCalc = NULL,
+                                     progressBar = TRUE){
+    if(progressBar){
+        mcl = pbmcapply::pbmclapply
+    } else{
+        mcl = parallel::mclapply
+    }
+
     signatures %>% parallel::mclapply(function(signature){
         upTags = signature$upTags
         downTags = signature$downTags

@@ -12,7 +12,8 @@ Imports:
     httr,
     jsonlite,
     matrixStats,
-    parallel
+    parallel,
+    pbmcapply
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
