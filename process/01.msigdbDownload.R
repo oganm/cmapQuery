@@ -34,8 +34,8 @@ downSigs = sigNames[sigNames %>% grep('DN$',.,ignore.case = TRUE)] %>% str_extra
 upDown = intersect(upSigs,downSigs)
 
 MSigDB62 = lapply(str_split(upDown,'\\.'),function(x){
-    upTags = MSigDB[[x[1]]][paste0(x[2],'_UP')]
-    downTags = MSigDB[[x[1]]][paste0(x[2],'_DN')]
+    upTags = MSigDB[[x[1]]][[paste0(x[2],'_UP')]]
+    downTags = MSigDB[[x[1]]][[paste0(x[2],'_DN')]]
     return(list(upTags = upTags, downTags = downTags))
 })
 names(MSigDB62) = upDown
