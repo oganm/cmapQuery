@@ -123,5 +123,3 @@ Since I want to experiment with all of those, this needs to be dataset independe
 Current process is to run `preCalcRandomKs` before running the experiment manually to get a memoised function and use it as an input to `connectivityMapEnrichment`. This will take a long time for the new L1000 data. I can start to see why Mayan's group abondoned this method.
 
 To be able to quickly compare the studies it might make sense to use Mayan's web apps. I am implementing wrappers for the API calls of the apps.
-
-The
