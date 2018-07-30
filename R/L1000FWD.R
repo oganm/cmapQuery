@@ -16,7 +16,6 @@ L1000FWD = function(upGenes,downGenes){
 
     response %<>% lapply(function(x){
         chemInfo = x$sig_id %>% sapply(function(y){
-            print(y)
             response = httr::GET(paste0(L1000FWD_URL,'sig/',y))
             response <- jsonlite::fromJSON(httr::content(response, 'text') %>% gsub('NaN','"NA"',.))
 
